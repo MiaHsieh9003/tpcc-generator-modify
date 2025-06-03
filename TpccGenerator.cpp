@@ -6,6 +6,7 @@
 #include <chrono>
 #include <cassert>
 #include <cstring>
+#include <numeric>
 
 using namespace std;
 
@@ -33,7 +34,7 @@ void TpccGenerator::generateWarehouses()
    csv::CsvWriter w_csv(folder + "/warehouse.csv");
 
    for (w_id = 1L; w_id<=warehouse_count; w_id++) {
-      makeAlphaString(6, 10, w_name.data());
+      makeAlphaString(6, 10, w_name.data()); //w_name.data = &w_name[0]
       makeAddress(w_street_1.data(), w_street_2.data(), w_city.data(), w_state.data(), w_zip.data());
       w_tax = ((float) makeNumber(10L, 20L)) / 100.0f;
       w_ytd = 3000000.00f;
@@ -134,6 +135,7 @@ void TpccGenerator::generateCustomerAndHistory()
             makeAlphaString(300, 500, c_data.data());
 
             // @formatter:off
+            // customer
             c_csv << c_id << c_d_id << c_w_id << c_first << c_middle << c_last << c_street_1 << c_street_2 << c_city
                   << c_state << c_zip << c_phone << c_since << c_credit << csv::Precision(2) << c_credit_lim
                   << csv::Precision(4) << c_discount << csv::Precision(2) << c_balance << 10.0f << int64_t(1)
@@ -144,6 +146,7 @@ void TpccGenerator::generateCustomerAndHistory()
             makeAlphaString(12, 24, h_data.data());
 
             // @formatter:off
+            // history
             h_csv << c_id << c_d_id << c_w_id << c_d_id << c_w_id << c_since << h_amount << h_data << csv::endl;
             // @formatter:on
          }
@@ -262,6 +265,7 @@ void TpccGenerator::generateStock()
          }
 
          // @formatter:off
+         // stock
          s_csv << s_i_id << s_w_id << s_quantity << s_dist_01 << s_dist_02 << s_dist_03 << s_dist_04 << s_dist_05
                << s_dist_06 << s_dist_07 << s_dist_08 << s_dist_09 << s_dist_10 << s_ytd << s_order_cnt
                << s_remote_cnt << s_data << csv::endl;
@@ -345,11 +349,13 @@ void TpccGenerator::generateOrdersAndOrderLines()
    cout << "ok !" << endl;
 }
 
+// make name
 uint32_t TpccGenerator::makeAlphaString(uint32_t min, uint32_t max, char *dest)
 {
    const static char *possible_values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-   uint32_t len = makeNumber(min, max);
+   uint32_t len = makeNumber(min, max);   //決定這次字串的長度（落在[min, max]之間）
+
    for (uint32_t i = 0; i<len; i++) {
       dest[i] = possible_values[ranny() % 62];
    }
@@ -358,7 +364,60 @@ uint32_t TpccGenerator::makeAlphaString(uint32_t min, uint32_t max, char *dest)
    }
    return len;
 }
+// makeAlphaString的另一個版本，可以選擇字串的長度落在[min, max]之間，並且可以選擇字串的類型
+uint32_t TpccGenerator::makeAlphaString(uint32_t min, uint32_t max, char *dest, uint32_t type){
+   const static char *possible_values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+   uint32_t len = makeNumber(min, max);
+   for(uint32_t i = 0; i<len; i++) {
+      switch(type) {
+         case NODE4:
+            dest[i] = makeNode4Element()[ranny() % 4];
+            break;
+         case NODE10:
+            dest[i] = makeNode10Element()[ranny() % 10];
+            break;
+         case NODE48:
+            dest[i] = makeNode48Element()[ranny() % 48];
+            break;
+         case NODE256:
+            dest[i] = possible_values[ranny() % 62];
+            break;
+      }
+   }
+   if (len<max) {
+      dest[len] = '\0';
+   }
+   return len;}
 
+char *TpccGenerator::makeNode4Element()
+{
+   const static char *possible_values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+   std::vector <char> out ;
+   for(uint32_t j = 0; j<50; j++) {
+      for(uint32_t i = 0; i<4; i++) {
+         out[i] = possible_values[ranny() % 62];
+      }
+      seq4.push_back(out);
+   }
+}
+char *TpccGenerator::makeNode10Element()
+{
+   const static char *possible_values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+   char *out = new char[10];
+   for(uint32_t i = 0; i<10; i++) {
+      out[i] = possible_values[ranny() % 62];
+   }
+   return out;
+}
+char *TpccGenerator::makeNode48Element()
+{
+   const static char *possible_values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+   char *out = new char[48];
+   for(uint32_t i = 0; i<48; i++) {
+      out[i] = possible_values[ranny() % 62];
+   }
+   return out;
+}
 uint32_t TpccGenerator::makeNumberString(uint32_t min, uint32_t max, char *dest)
 {
    const static char *possible_values = "0123456789";
@@ -397,7 +456,7 @@ vector<uint32_t> TpccGenerator::makePermutation(uint32_t min, uint32_t max)
    assert(max>min);
    const uint32_t count = max - min;
    vector<uint32_t> result(count);
-   iota(result.begin(), result.end(), min);
+   std::iota(result.begin(), result.end(), min);
 
    for (uint32_t i = 0; i<count; i++) {
       swap(result[i], result[ranny() % count]);
