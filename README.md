@@ -18,14 +18,23 @@ We generate portable [csv](https://en.wikipedia.org/wiki/Comma-separated_values)
 
 ## Run
 
-With the following command you can create TPC-C input with _5_ warehouses. All files are stored in the my_tpcc_input directory. Note: The directory has to exist before starting the generator. But, no worries, if does not exists the generator will complain.
-
+With the following command you can create TPC-C input with _5_ warehouses. Note: The directory has to exist before starting the generator. But, no worries, if does not exists the generator will complain.
+Have different type of node can choose to generate element source
+'''before run
+change 'type' variable to choose the node type in TpccGenerator.hpp
+'''
 ```bash
 make
 mkdir my_tpcc_input
 ./tpcc-generator 5 my_tpcc_input
 ```
-
+'''gdb
+make
+mkdir folder_name
+gdb ./tpcc-generator
+in gdb
+(gdb) run 5 folder_name
+'''
 Sample output:
 ```
 I am loading TPCC data for 5 warehouses, hold on ..

@@ -15,6 +15,8 @@ TpccGenerator::TpccGenerator(int64_t warehouse_count, const string &folder)
           , folder(folder)
           , ranny(42)
 {
+   int elementMax = 501;
+   initialNodeElementSource(elementMax, type); // Initialize the node element sources
 }
 
 void TpccGenerator::generateWarehouses()
@@ -32,9 +34,11 @@ void TpccGenerator::generateWarehouses()
    float w_ytd;
 
    csv::CsvWriter w_csv(folder + "/warehouse.csv");
+   // Initialize the node element sources
 
    for (w_id = 1L; w_id<=warehouse_count; w_id++) {
-      makeAlphaString(6, 10, w_name.data()); //w_name.data = &w_name[0]
+      // makeAlphaString(6, 10, w_name.data()); //w_name.data = &w_name[0]
+      makeAlphaString(6, 10, w_name.data(), type); //w_name.data = &w_name[0]
       makeAddress(w_street_1.data(), w_street_2.data(), w_city.data(), w_state.data(), w_zip.data());
       w_tax = ((float) makeNumber(10L, 20L)) / 100.0f;
       w_ytd = 3000000.00f;
@@ -71,7 +75,8 @@ void TpccGenerator::generateDistricts()
       for (d_id = 1; d_id<=kDistrictsPerWarehouse; d_id++) {
          d_ytd = 30000.0;
          d_next_o_id = 3001L;
-         makeAlphaString(6L, 10L, d_name.data());
+         // makeAlphaString(6L, 10L, d_name.data());
+         makeAlphaString(6L, 10L, d_name.data(), type);
          makeAddress(d_street_1.data(), d_street_2.data(), d_city.data(), d_state.data(), d_zip.data());
          d_tax = ((float) makeNumber(10L, 20L)) / 100.0f;
 
@@ -117,7 +122,8 @@ void TpccGenerator::generateCustomerAndHistory()
    for (c_w_id = 1; c_w_id<=warehouse_count; c_w_id++) {
       for (c_d_id = 1; c_d_id<=kDistrictsPerWarehouse; c_d_id++) {
          for (c_id = 1; c_id<=kCustomerPerDistrict; c_id++) {
-            makeAlphaString(8, 16, c_first.data());
+            // makeAlphaString(8, 16, c_first.data());
+            makeAlphaString(8, 16, c_first.data(), type);
             c_middle[0] = 'O';
             c_middle[1] = 'E';
             if (c_id<=1000)
@@ -132,7 +138,8 @@ void TpccGenerator::generateCustomerAndHistory()
             c_discount = ((float) makeNumber(0L, 50L)) / 100.0f;
             c_balance = -10.0f;
             makeNow(c_since.data());
-            makeAlphaString(300, 500, c_data.data());
+            // makeAlphaString(300, 500, c_data.data());
+            makeAlphaString(300, 500, c_data.data(), type);
 
             // @formatter:off
             // customer
@@ -143,7 +150,8 @@ void TpccGenerator::generateCustomerAndHistory()
             // @formatter:on
 
             h_amount = 10.0;
-            makeAlphaString(12, 24, h_data.data());
+            // makeAlphaString(12, 24, h_data.data());
+            makeAlphaString(12, 24, h_data.data(), type);
 
             // @formatter:off
             // history
@@ -179,9 +187,11 @@ void TpccGenerator::generateItems()
    }
 
    for (i_id = 1; i_id<=kItemCount; i_id++) {
-      makeAlphaString(14, 24, i_name.data());
+      // makeAlphaString(14, 24, i_name.data());
+      makeAlphaString(14, 24, i_name.data(), type);
       i_price = ((float) makeNumber(100L, 10000L)) / 100.0f;
-      i_data_size = makeAlphaString(26, 50, i_data.data());
+      // i_data_size = makeAlphaString(26, 50, i_data.data());
+      i_data_size = makeAlphaString(26, 50, i_data.data(), type);
       i_im_id = makeNumber(0, 10000);
       if (orig[i_id]) {
          uint32_t pos = makeNumber(0L, i_data_size - 8);
@@ -241,17 +251,29 @@ void TpccGenerator::generateStock()
 
       for (s_i_id = 1; s_i_id<=kItemCount; s_i_id++) {
          s_quantity = makeNumber(10L, 100L);
-         makeAlphaString(24, 24, s_dist_01.data());
-         makeAlphaString(24, 24, s_dist_02.data());
-         makeAlphaString(24, 24, s_dist_03.data());
-         makeAlphaString(24, 24, s_dist_04.data());
-         makeAlphaString(24, 24, s_dist_05.data());
-         makeAlphaString(24, 24, s_dist_06.data());
-         makeAlphaString(24, 24, s_dist_07.data());
-         makeAlphaString(24, 24, s_dist_08.data());
-         makeAlphaString(24, 24, s_dist_09.data());
-         makeAlphaString(24, 24, s_dist_10.data());
-         uint32_t s_data_size = makeAlphaString(26, 50, s_data.data());
+         // makeAlphaString(24, 24, s_dist_01.data());
+         // makeAlphaString(24, 24, s_dist_02.data());
+         // makeAlphaString(24, 24, s_dist_03.data());
+         // makeAlphaString(24, 24, s_dist_04.data());
+         // makeAlphaString(24, 24, s_dist_05.data());
+         // makeAlphaString(24, 24, s_dist_06.data());
+         // makeAlphaString(24, 24, s_dist_07.data());
+         // makeAlphaString(24, 24, s_dist_08.data());
+         // makeAlphaString(24, 24, s_dist_09.data());
+         // makeAlphaString(24, 24, s_dist_10.data());
+         makeAlphaString(24, 24, s_dist_01.data(), type);
+         makeAlphaString(24, 24, s_dist_02.data(), type);
+         makeAlphaString(24, 24, s_dist_03.data(), type);
+         makeAlphaString(24, 24, s_dist_04.data(), type);
+         makeAlphaString(24, 24, s_dist_05.data(), type);
+         makeAlphaString(24, 24, s_dist_06.data(), type);
+         makeAlphaString(24, 24, s_dist_07.data(), type);   
+         makeAlphaString(24, 24, s_dist_08.data(), type);
+         makeAlphaString(24, 24, s_dist_09.data(), type);
+         makeAlphaString(24, 24, s_dist_10.data(), type);
+
+         // uint32_t s_data_size = makeAlphaString(26, 50, s_data.data());
+         uint32_t s_data_size = makeAlphaString(26, 50, s_data.data(), type);
          if (orig[s_i_id]) {
             int64_t pos = makeNumber(0L, s_data_size - 8);
             s_data[pos] = 'o';
@@ -321,7 +343,8 @@ void TpccGenerator::generateOrdersAndOrderLines()
             for (ol_number = 1; ol_number<=o_ol_cnt; ol_number++) {
                ol_i_id = makeNumber(1L, kItemCount);
                ol_quantity = 5;
-               makeAlphaString(24, 24, ol_dist_info.data());
+               // makeAlphaString(24, 24, ol_dist_info.data());
+               makeAlphaString(24, 24, ol_dist_info.data(), type);
 
                if (o_id>2100) {
                   ol_amount = (float) (makeNumber(10L, 10000L)) / 100.0f;
@@ -368,55 +391,100 @@ uint32_t TpccGenerator::makeAlphaString(uint32_t min, uint32_t max, char *dest)
 uint32_t TpccGenerator::makeAlphaString(uint32_t min, uint32_t max, char *dest, uint32_t type){
    const static char *possible_values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
    uint32_t len = makeNumber(min, max);
-   for(uint32_t i = 0; i<len; i++) {
-      switch(type) {
-         case NODE4:
-            dest[i] = makeNode4Element()[ranny() % 4];
-            break;
-         case NODE10:
-            dest[i] = makeNode10Element()[ranny() % 10];
-            break;
-         case NODE48:
-            dest[i] = makeNode48Element()[ranny() % 48];
-            break;
-         case NODE256:
+   switch(type) {
+      case NODE4:
+         for(uint32_t i = 0; i<len; i++) {
+            dest[i] = seq4[i][ranny() % 4];
+         }
+         break;
+      case NODE10:
+         for(uint32_t i = 0; i<len; i++) {
+            dest[i] = seq10[i][ranny() % 10];
+         }
+         break;
+      case NODE48:
+         for(uint32_t i = 0; i<len; i++) {
+            dest[i] = seq48[i][ranny() % 48];
+         }
+         break;
+      case NODE256:
+         for(uint32_t i = 0; i<len; i++) {
             dest[i] = possible_values[ranny() % 62];
-            break;
-      }
+         }
+         break;
+      default:
+         break;
    }
+      
    if (len<max) {
       dest[len] = '\0';
    }
-   return len;}
+   return len;
+}
 
-char *TpccGenerator::makeNode4Element()
+void TpccGenerator::initialNodeElementSource(uint32_t max, uint32_t type)
+{
+   switch (type)  // type is NODE4, NODE10, NODE48, etc.
+   {
+      case NODE4:
+         // reserve is 預留空間，但不會真正建元素, resize
+         seq4.reserve(max);
+         seq4.clear();
+         // Initialize the node element sources
+         makeNode4ElementSource(max);
+         break;
+   
+      case NODE10:
+         seq10.reserve(max);
+         seq10.clear();
+         makeNode10ElementSource(max);
+         break;
+      case NODE48:
+         seq48.reserve(max);
+         seq48.clear();
+         makeNode48ElementSource(max);
+         break;
+      default:
+         break;
+   }
+}
+
+void TpccGenerator::makeNode4ElementSource(uint32_t max)
 {
    const static char *possible_values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-   std::vector <char> out ;
-   for(uint32_t j = 0; j<50; j++) {
+   std::vector <char> out;
+   out.resize(4); // Reserve space for 4 characters
+   for(uint32_t j = 0; j< max; j++) {
       for(uint32_t i = 0; i<4; i++) {
          out[i] = possible_values[ranny() % 62];
       }
       seq4.push_back(out);
    }
+   // cout<<"max:"<<max<<" seq48.size():"<<seq10.size()<<endl;
 }
-char *TpccGenerator::makeNode10Element()
+void TpccGenerator::makeNode10ElementSource(uint32_t max)
 {
    const static char *possible_values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-   char *out = new char[10];
-   for(uint32_t i = 0; i<10; i++) {
-      out[i] = possible_values[ranny() % 62];
+   std::vector <char> out;
+   out.resize(10); // Reserve space for 10 characters
+   for(uint32_t j = 0; j< max; j++) {
+      for(uint32_t i = 0; i<10; i++) {
+         out[i] = possible_values[ranny() % 62];
+      }
+      seq10.push_back(out);
    }
-   return out;
 }
-char *TpccGenerator::makeNode48Element()
+void TpccGenerator::makeNode48ElementSource(uint32_t max)
 {
    const static char *possible_values = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-   char *out = new char[48];
-   for(uint32_t i = 0; i<48; i++) {
-      out[i] = possible_values[ranny() % 62];
+   std::vector <char> out;
+   out.resize(48); // Reserve space for 48 characters
+   for (uint32_t j = 0; j< max; j++) {   
+      for(uint32_t i = 0; i<48; i++) {
+         out[i] = possible_values[ranny() % 62];
+      }
+      seq48.push_back(out);
    }
-   return out;
 }
 uint32_t TpccGenerator::makeNumberString(uint32_t min, uint32_t max, char *dest)
 {
@@ -434,10 +502,14 @@ uint32_t TpccGenerator::makeNumberString(uint32_t min, uint32_t max, char *dest)
 
 void TpccGenerator::makeAddress(char *street1, char *street2, char *city, char *state, char *zip)
 {
-   makeAlphaString(10, 20, street1);
-   makeAlphaString(10, 20, street2);
-   makeAlphaString(10, 20, city);
-   makeAlphaString(2, 2, state);
+   // makeAlphaString(10, 20, street1);
+   // makeAlphaString(10, 20, street2);
+   // makeAlphaString(10, 20, city);
+   // makeAlphaString(2, 2, state);
+   makeAlphaString(10, 20, street1, type);
+   makeAlphaString(10, 20, street2, type);
+   makeAlphaString(10, 20, city, type);
+   makeAlphaString(2, 2, state, type);
    makeNumberString(9, 9, zip); // XXX
 }
 
